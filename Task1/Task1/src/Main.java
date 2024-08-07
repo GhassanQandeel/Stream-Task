@@ -15,8 +15,10 @@ dateOfBirth // Date
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class Main {
     public static void main(String[] args) {
@@ -38,8 +40,16 @@ public class Main {
          1. Use streams to create a comma separated string with employees ids.
          i am  understand you want to put the ids of employees in string between them commas
         */
+     /*
         temp = employees.stream().mapToLong(employee -> employee.id).collect(StringBuilder ::new, (stringBuilder, value) -> stringBuilder.append(value+","), StringBuilder::append);
+
         temp.deleteCharAt(temp.length()-1);
+*/
+        /*employees.stream().forEach(employee -> temp.append(employee.id+","));*/
+
+        temp= new StringBuilder(employees.stream().map(employee -> String.valueOf(employee.id)).collect(Collectors.joining(",")));
+        // i wish that is the wanted solution;
+
 
 
 
@@ -100,27 +110,58 @@ public class Main {
 
 
 
+        Map<Position,Function<Employee,Integer>> salary =new HashMap<>();
+        salary.put(Position.QA,Main::salaryQA);
+        salary.put(Position.HR,Main::salaryHR);
+        salary.put(Position.BE,Main::salaryBE);
+        salary.put(Position.FE,Main::salaryFE);
+
+
 
 
 
        SomeMethod someMethod = employee ->
                System.out.println("Salary for "+employee.firstName+" " +
                        ""+employee.lastName+"("+employee.position+") is :" +
-                       ""+employee.position.value*1000+"$");
-            // I can do without if statements by define values for enum class ( I don't know if there are some else ways )
+                       ""+salary.get(employee.position).apply(employee)+"$");
+
+
+            // I can do without if statements by define values for enum class (I don't know if there are some else ways)
 
 
         //3. Define a method that takes an Employee and prints a salary based on the position. then call it from the forEach.
         System.out.println("____________________________________________________________________________________________________\n");
         System.out.println("Q3: Define a method that takes an Employee and prints a salary based on the position. then call it from the forEach.");
-        System.out.println("Solution is : ");
+        System.out.println("Solution is by use salary map to mapping Position -> salary : ");
         employees.forEach(someMethod::someMethod);
         System.out.println("____________________________________________________________________________________________________\n");
 
+    }
 
+    private static Integer salaryQA(Employee employee) {
 
-
+        return 7000;
 
 
     }
+        private static Integer salaryHR(Employee employee) {
+
+        return 5500;
+
+
+    }
+        private static Integer salaryBE(Employee employee) {
+
+        return 6666;
+
+
+    }
+        private static Integer salaryFE(Employee employee) {
+
+        return 9100;
+
+
+    }
+
+
 }
